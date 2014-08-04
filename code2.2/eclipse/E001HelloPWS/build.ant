@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="E001HelloPWS" default="BuildHelloPWS">
+	
+	<property name="version" value="v2.2"/>
+	<property name="Project_pws_name" value="PlterWebServer-${version}"/>
+
+    <target name="BuildHelloPWS">
+        <jar destfile="../${Project_pws_name}/srvroot/e001.jar">
+        	<fileset dir="bin"></fileset>
+        </jar>
+    </target>
+</project>

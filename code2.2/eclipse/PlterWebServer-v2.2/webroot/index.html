@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>使用PWS</title>
+<script type="text/javascript" src="jquery-1.8.1.min.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+
+		$("#submitBtn").bind("click", function() {
+
+			$("#alertLabel").text("正在通信，请稍候...");
+			for ( var i = 0; i < 1; i++) {
+				$.post("hello/com.plter.hellopws.SayHello", {
+					name : $("#nameInput").attr("value")
+				}, function(data) {
+					$("#resultTxt").attr("value", data);
+					$("#alertLabel").empty();
+				});
+			}
+		});
+	});
+</script>
+
+</head>
+<body>
+	<label>名字</label>
+	<input type="text" value="plter.com" id="nameInput">
+	<br>
+	<input type="button" value="提交" id="submitBtn">
+	<br>
+	<font color="#FF0000"><label id="alertLabel"></label></font>
+	<br>
+	<label>结果：</label>
+	<input type="text" id="resultTxt">
+	<br/>
+	<img alt="" src="img4.jpg">
+</body>
+</html>

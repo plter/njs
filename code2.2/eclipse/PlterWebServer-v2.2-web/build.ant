@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="PlterWebServer-web" default="BuildAll">
+    
+	<property name="version" value="v2.2"/>
+	<property name="Project_pws_name" value="PlterWebServer-${version}"/>
+
+    <target name="BuildAll">
+        <antcall target="Build_web_jar"></antcall>
+    </target>
+	
+	<target name="Build_web_jar">
+		<jar destfile="../${Project_pws_name}/plugins/pws-web-${version}.jar">
+			<fileset dir="bin"/>
+		</jar>
+	</target>
+</project>

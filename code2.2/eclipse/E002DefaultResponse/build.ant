@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="E002DefaultResponse" default="BuildDefaultResponse">
+	
+	<property name="version" value="v2.2"/>
+	<property name="Project_pws_name" value="PlterWebServer-${version}"/>
+
+    <target name="BuildDefaultResponse">
+        <jar destfile="../${Project_pws_name}/srvroot/main.jar">
+        	<fileset dir="bin"></fileset>
+        </jar>
+    </target>
+</project>

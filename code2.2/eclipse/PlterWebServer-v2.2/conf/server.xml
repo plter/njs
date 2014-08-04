@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+    <port value="8888" />
+    <web root="webroot" />
+    
+    <!-- 服务程序根目录 -->
+    <srv root="srvroot">
+    	<!-- 默认服务器程序和默认处理器 -->
+    	<defaultApp file="main" defaultResponse="Main"/>
+    </srv>
+    
+    <!-- 连接数配置，0为不限制-->
+    <pws processorCount="0"/>
+    
+    <!-- 默认文档，多个默认文档用半角字符逗号(,)隔开 -->
+    <default doc="index.html" />
+    <pages
+        page403="pages/403.html"
+        page404="pages/404.html"
+        page500="pages/500.html" />
+
+	<!-- 随PWS系统一起启动的类，多个类以逗号隔开，如：com.plter.Startup,com.plter.Startup1 -->
+    <autoStart classes=""/>
+
+</server>

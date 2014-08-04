@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="PlterWebServer-core" default="BuildAll">
+    
+	<property name="version" value="v2.2"/>
+	<property name="Project_pws_name" value="PlterWebServer-${version}"/>
+
+    <target name="BuildAll">
+        <antcall target="Build_core_jar"></antcall>
+    	<antcall target="Build_plib_common"></antcall>
+    </target>
+	
+	<target name="Build_core_jar">
+		<jar destfile="../${Project_pws_name}/plugins/pws-core-${version}.jar">
+			<fileset dir="bin"/>
+		</jar>
+	</target>
+	<target name="Build_plib_common">
+		<jar destfile="../${Project_pws_name}/plugins/plib-common-v1.0.jar">
+			<fileset dir="bin"/>
+		</jar>
+	</target>
+</project>

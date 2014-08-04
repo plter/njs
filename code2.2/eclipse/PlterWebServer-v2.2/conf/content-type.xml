@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contentTypes>
+    <file type="jpg" contentType="image/jpeg"/>
+    <file type="jpeg" contentType="image/jpeg"/>
+    <file type="png" contentType="image/png"/>
+    <file type="js" contentType="application/x-javascript"/>
+    <file type="css" contentType="text/css"/>
+    <file type="gif" contentType="image/gif"/>
+    <file type="ico" contentType="image/x-icon"/>
+    <file type="html" contentType="text/html"/>
+    <file type="htm" contentType="text/html"/>
+    <file type="txt" contentType="text/html"/>
+    <file type="xml" contentType="text/xml"/>
+    <file type="swf" contentType="application/x-shockwave-flash"/>
+    <file type="zip" contentType="application/octet-stream"/>
+    <file type="dmg" contentType="application/octet-stream"/>
+    <file type="mkv" contentType="application/octet-stream"/>
+    <file type="rmvb" contentType="application/octet-stream"/>
+    <file type="mp3" contentType="audio/mp3"/>
+</contentTypes>
