@@ -178,7 +178,6 @@ public final class HttpRequestDecoderFilter extends BaseFilter {
 	}
 
 	private void decodePostRequest(BaseFilter nextFilter,SelectionKey selectionKey,ByteBuffer dataBuf){
-		//TODO decode post request
 		
 		SelectionKeyAttachment attachment = (SelectionKeyAttachment) selectionKey.attachment();
 		
@@ -197,13 +196,14 @@ public final class HttpRequestDecoderFilter extends BaseFilter {
 						request.writePostBuffedData(b);
 						
 						if (request.isPostDataCompleted()) {
-							
 							nextFilter.onMessageReceived(selectionKey, request);
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
 						close(selectionKey);
 					}
+				}else if (request.getContentLength()==0) {
+					nextFilter.onMessageReceived(selectionKey, request);
 				}
 				
 			}else{
@@ -240,7 +240,7 @@ public final class HttpRequestDecoderFilter extends BaseFilter {
 			// Http POST request
 			// first the position of the 0x0D 0x0A 0x0D 0x0A bytes
 			int postHeaderEnd = -1;
-			for (int i = 4; i < dataBuf.limit()-4; i++) {
+			for (int i = 4; i < dataBuf.limit()-3; i++) {
 				if (dataBuf.get(i) == (byte) 0x0D && dataBuf.get(i + 1) == (byte) 0x0A
 						&& dataBuf.get(i + 2) == (byte) 0x0D
 						&& dataBuf.get(i + 3) == (byte) 0x0A) {
@@ -248,7 +248,7 @@ public final class HttpRequestDecoderFilter extends BaseFilter {
 					break;
 				}
 			}
-			if(postHeaderEnd!=1){
+			if(postHeaderEnd>3){
 				attachment.setHttpMethod(HttpMethod.POST);
 				attachment.setPostHeaderEnd(postHeaderEnd);
 				attachment.setRequestCompleted(true);

@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 
 import com.plter.njs.http.HttpRequestDecoderFilter;
+import com.plter.njs.http.HttpResponseHeader;
 import com.plter.njs.socket.SocketAcceptor;
 import com.plter.njs.socket.BaseFilter;
 
@@ -20,7 +21,8 @@ public class UsingHttp {
 					Object message) {
 				
 				try {
-					writeMessage(selectionKey, ByteBuffer.wrap("Hello Client\n".getBytes("utf-8")));
+					writeMessage(selectionKey, new HttpResponseHeader().getHeaderBuf());
+					writeMessage(selectionKey, ByteBuffer.wrap("Hello Client".getBytes("utf-8")));
 					close(selectionKey);
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
