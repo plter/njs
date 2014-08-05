@@ -16,7 +16,7 @@
 
 package com.plter.njs.core.tests;
 
-import com.plter.njs.core.SocketAcceptor;
+import com.plter.njs.socket.SocketAcceptor;
 
 public class UsingSockAcceptor {
 
@@ -28,7 +28,6 @@ public class UsingSockAcceptor {
 		SocketAcceptor acceptor = new SocketAcceptor(8888);
 		acceptor.getFilterChain().push(new MyHandler());
 		acceptor.listen();
-
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.plter.njs.core;
+package com.plter.njs.socket;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -9,7 +9,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import com.plter.lib.java.utils.LogFactory;
+import com.plter.njs.log.LogFactory;
 
 public class SocketAcceptThread extends Thread {
 

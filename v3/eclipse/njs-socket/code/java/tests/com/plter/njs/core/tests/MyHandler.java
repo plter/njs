@@ -20,7 +20,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.util.logging.Logger;
 
-import com.plter.njs.core.SocketFilter;
+import com.plter.njs.socket.SocketFilter;
 
 public class MyHandler extends SocketFilter {
 	

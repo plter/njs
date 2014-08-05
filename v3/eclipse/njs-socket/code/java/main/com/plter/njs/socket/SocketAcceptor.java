@@ -14,7 +14,7 @@
    limitations under the License.
  */
 
-package com.plter.njs.core;
+package com.plter.njs.socket;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -23,7 +23,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.util.logging.Logger;
 
-import com.plter.lib.java.utils.LogFactory;
+import com.plter.njs.log.LogFactory;
 
 public class SocketAcceptor{
 

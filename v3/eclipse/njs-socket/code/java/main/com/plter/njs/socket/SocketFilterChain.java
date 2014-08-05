@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package com.plter.njs.core;
+package com.plter.njs.socket;
 
 import java.util.ArrayList;
 import java.util.List;
