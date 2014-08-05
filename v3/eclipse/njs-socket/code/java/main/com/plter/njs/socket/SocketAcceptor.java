@@ -31,7 +31,7 @@ public class SocketAcceptor{
 
 	public SocketAcceptor(int port){
 		this.port=port;
-		socketFilterChain=new SocketFilterChain(this);
+		socketFilterChain=new FilterChain(this);
 	}
 
 	public boolean listen(){
@@ -71,8 +71,8 @@ public class SocketAcceptor{
 		return port;
 	}
 
-	private SocketFilterChain socketFilterChain=null;
-	public SocketFilterChain getFilterChain() {
+	private FilterChain socketFilterChain=null;
+	public FilterChain getFilterChain() {
 		return socketFilterChain;
 	}
 

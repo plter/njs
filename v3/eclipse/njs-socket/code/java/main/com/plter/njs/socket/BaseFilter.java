@@ -22,9 +22,9 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.logging.Logger;
 
-public class SocketFilter {
+public class BaseFilter {
 
-	private static final Logger log = Logger.getLogger(SocketFilter.class.toString());
+	private static final Logger log = Logger.getLogger(BaseFilter.class.toString());
 
 	public void onSocketChannelOpen(SelectionKey selectionKey) {
 		if(hasNext()){
@@ -75,11 +75,11 @@ public class SocketFilter {
 	}
 
 
-	public final SocketFilter next(){
+	public final BaseFilter next(){
 		return getSocketFilterChain().get(getIndex()+1);
 	}
 
-	public final SocketFilter pre(){
+	public final BaseFilter pre(){
 		return getSocketFilterChain().get(getIndex()-1);
 	}
 
@@ -102,5 +102,5 @@ public class SocketFilter {
 
 	private int index=0;final void setIndex(int index) {this.index = index;}public final int getIndex() {return index;}
 	private SocketAcceptor socketAcceptor=null;void setSocketAcceptor(SocketAcceptor socketAcceptor) {this.socketAcceptor = socketAcceptor;}public SocketAcceptor getSocketAcceptor() {return socketAcceptor;}
-	private SocketFilterChain socketFilterChain=null;public SocketFilterChain getSocketFilterChain() {return socketFilterChain;}void setSocketFilterChain(SocketFilterChain socketFilterChain) {this.socketFilterChain = socketFilterChain;}
+	private FilterChain socketFilterChain=null;public FilterChain getSocketFilterChain() {return socketFilterChain;}void setSocketFilterChain(FilterChain socketFilterChain) {this.socketFilterChain = socketFilterChain;}
 }

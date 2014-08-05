@@ -19,16 +19,16 @@ package com.plter.njs.socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class SocketFilterChain {
+public final class FilterChain {
 	
 	
-	public SocketFilterChain(SocketAcceptor socketAcceptor) {
+	public FilterChain(SocketAcceptor socketAcceptor) {
 		this.socketAcceptor=socketAcceptor;
 	}
 	
-	private final List<SocketFilter> socketFilters = new ArrayList<>();
+	private final List<BaseFilter> socketFilters = new ArrayList<>();
 	
-	public SocketFilter push(SocketFilter filter){
+	public BaseFilter push(BaseFilter filter){
 		socketFilters.add(filter);
 		filter.setIndex(socketFilters.size()-1);
 		setupSocketFilter(filter);
@@ -36,7 +36,7 @@ public final class SocketFilterChain {
 	}
 	
 	
-	public SocketFilter addAfter(String name,SocketFilter filter){
+	public BaseFilter addAfter(String name,BaseFilter filter){
 		for (int i = 0; i < socketFilters.size(); i++) {
 			if(socketFilters.get(i).getName().equals(name)){
 				insert(i+1,filter);
@@ -47,7 +47,7 @@ public final class SocketFilterChain {
 	}
 	
 	
-	public SocketFilter addBefore(String name,SocketFilter filter){
+	public BaseFilter addBefore(String name,BaseFilter filter){
 		for (int i = 0; i < socketFilters.size(); i++) {
 			if(socketFilters.get(i).getName().equals(name)){
 				insert(i,filter);
@@ -58,38 +58,38 @@ public final class SocketFilterChain {
 	}
 	
 	
-	public SocketFilter insert(int index,SocketFilter filter){
+	public BaseFilter insert(int index,BaseFilter filter){
 		socketFilters.add(index, filter);
 		setupSocketFilter(filter);
 		updateFiltersIndex();
 		return filter;
 	}
 	
-	public SocketFilter pop(){
+	public BaseFilter pop(){
 		return socketFilters.remove(socketFilters.size()-1);
 	}
 	
-	public SocketFilter shift(){
-		SocketFilter sf = socketFilters.remove(0);
+	public BaseFilter shift(){
+		BaseFilter sf = socketFilters.remove(0);
 		updateFiltersIndex();
 		return sf;
 	}
 	
-	public SocketFilter remove(int index){
-		SocketFilter sf = socketFilters.remove(index);
+	public BaseFilter remove(int index){
+		BaseFilter sf = socketFilters.remove(index);
 		updateFiltersIndex();
 		return sf;
 	}
 	
-	public SocketFilter first(){
+	public BaseFilter first(){
 		return get(0);
 	}
 	
-	public SocketFilter last(){
+	public BaseFilter last(){
 		return get(socketFilters.size()-1);
 	}
 	
-	public SocketFilter get(int index){
+	public BaseFilter get(int index){
 		return socketFilters.get(index);
 	}
 	
@@ -101,7 +101,7 @@ public final class SocketFilterChain {
 		return filterCount()>0;
 	}
 	
-	private void setupSocketFilter(SocketFilter filter){
+	private void setupSocketFilter(BaseFilter filter){
 		filter.setSocketAcceptor(socketAcceptor);
 		filter.setSocketFilterChain(this);
 	}

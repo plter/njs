@@ -20,9 +20,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.util.logging.Logger;
 
-import com.plter.njs.socket.SocketFilter;
+import com.plter.njs.socket.BaseFilter;
 
-public class MyHandler extends SocketFilter {
+public class MyHandler extends BaseFilter {
 	
 	private static final Logger log = Logger.getLogger(MyHandler.class.toString());
 	
