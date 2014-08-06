@@ -53,7 +53,7 @@ public class SocketAcceptThread extends Thread {
 								byteBufferForRead.clear();
 							}
 						} catch (IOException e) {
-							log.severe("IO error accur when read data from channel");
+							log.finest("IO error accur when read data from channel");
 							closeClient(socketChannel, selectedKey);
 						}
 						

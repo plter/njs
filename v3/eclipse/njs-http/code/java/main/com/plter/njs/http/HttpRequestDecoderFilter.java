@@ -46,45 +46,48 @@ public final class HttpRequestDecoderFilter extends BaseFilter {
 
 		ByteBuffer msg = (ByteBuffer) message;
 		msg.flip();
-		
+
 		SelectionKeyAttachment attachment = (SelectionKeyAttachment) selectionKey.attachment();
 		String httpMethod = attachment.getHttpMethod();
 		if(!attachment.isRequestCompleted()){
-			attachment.getHttpRequestData().put(msg);
-			attachment.getHttpRequestData().flip();
+			if(attachment.appendHttpRequestData(msg)){
+				if (requestComplete(selectionKey, attachment.getHttpRequestData())) {
+					httpMethod = attachment.getHttpMethod();
 
-			if (requestComplete(selectionKey, attachment.getHttpRequestData())) {
-				httpMethod = attachment.getHttpMethod();
-
-				if("GET".equals(httpMethod)){
-					decodeGetRequest(next(), selectionKey, attachment.getHttpRequestData());
-				}else if("POST".equals(httpMethod)){
-					decodePostRequest(next(), selectionKey, attachment.getHttpRequestData());
-				}else{
-					log.warning("Unsupport HTTP Method");
-					close(selectionKey);
-					return;
+					//start read request info
+					attachment.getHttpRequestData().flip();
+					if("GET".equals(httpMethod)){
+						decodeGetRequest(next(), selectionKey, attachment.getHttpRequestData());
+					}else if("POST".equals(httpMethod)){
+						decodePostRequest(next(), selectionKey, attachment.getHttpRequestData());
+					}else{
+						log.warning("Unsupport HTTP Method");
+						close(selectionKey);
+						return;
+					}
 				}
+			}else{
+				log.warning("Http request header data too lang");
+				close(selectionKey);
 			}
 		}else{
 			if ("POST".equals(httpMethod)) {
 				byte[] bytes = new byte[msg.remaining()];
 				msg.get(bytes);
-				
+
 				try {
-					
+
 					if (!attachment.getHttpRequest().isPostDataCompleted()) {
 						attachment.getHttpRequest().writePostBuffedData(bytes);
-						
+
 						if (attachment.getHttpRequest().isPostDataCompleted()) {
 							next().onMessageReceived(selectionKey, attachment.getHttpRequest());
 						}
-						
+
 					}else{
-						
 						close(selectionKey);
 					}
-					
+
 				} catch (IOException e) {
 					e.printStackTrace();
 					close(selectionKey);
@@ -104,10 +107,10 @@ public final class HttpRequestDecoderFilter extends BaseFilter {
 
 	private final HttpRequest decodeRequestHeader(SelectionKey selectionKey,String headerData){
 		Map<String, String> map = new HashMap<String, String>();
-		
+
 		BufferedReader br=null;
 		br = new BufferedReader(new StringReader(headerData));
-		
+
 		try{
 			String line = br.readLine();
 
@@ -139,12 +142,12 @@ public final class HttpRequestDecoderFilter extends BaseFilter {
 					}
 				}
 			}
-			
+
 			return new HttpRequest().setMap(map);
-			
+
 		}catch(IOException ioerr){
 			ioerr.printStackTrace();
-			
+
 			close(selectionKey);
 		}finally{
 			try {br.close();} catch (IOException e) {}
@@ -152,7 +155,7 @@ public final class HttpRequestDecoderFilter extends BaseFilter {
 
 		return null;
 	}
-	
+
 	@Override
 	public void close(SelectionKey selectionKey) {
 		super.close(selectionKey);
@@ -160,7 +163,7 @@ public final class HttpRequestDecoderFilter extends BaseFilter {
 
 
 	private final void decodeGetRequest(BaseFilter nextFilter,SelectionKey selectionKey,ByteBuffer dataBuf){
-		
+
 		HttpRequest request;
 		try {
 			request = decodeRequestHeader(selectionKey, NJSHttpConfig.CHARSET_DECODER.decode(dataBuf).toString());
@@ -174,27 +177,27 @@ public final class HttpRequestDecoderFilter extends BaseFilter {
 			e.printStackTrace();
 			close(selectionKey);
 		}
-		
+
 	}
 
 	private void decodePostRequest(BaseFilter nextFilter,SelectionKey selectionKey,ByteBuffer dataBuf){
-		
+
 		SelectionKeyAttachment attachment = (SelectionKeyAttachment) selectionKey.attachment();
-		
-		byte[] bytes = new byte[attachment.getPostHeaderEnd()];
+
+		byte[] bytes = new byte[attachment.getHeaderEnd()];
 		dataBuf.get(bytes);
 		try {
 			HttpRequest request = decodeRequestHeader(selectionKey,new String(bytes, NJSHttpConfig.CHARSET));
-			
+
 			if (request!=null) {
 				attachment.setHttpRequest(request);
-				
+
 				if (dataBuf.hasRemaining()) {
 					byte[] b = new byte[dataBuf.remaining()];
 					dataBuf.get(b);
 					try {
 						request.writePostBuffedData(b);
-						
+
 						if (request.isPostDataCompleted()) {
 							nextFilter.onMessageReceived(selectionKey, request);
 						}
@@ -205,52 +208,55 @@ public final class HttpRequestDecoderFilter extends BaseFilter {
 				}else if (request.getContentLength()==0) {
 					nextFilter.onMessageReceived(selectionKey, request);
 				}
-				
+
 			}else{
 				close(selectionKey);
 			}
-			
+
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			close(selectionKey);
 		}
-		
+	}
+	
+	
+	private int findRequestHeaderEnd(ByteBuffer dataBuf){
+		// find the position of the 0x0D 0x0A 0x0D 0x0A bytes
+		for (int i = 3; i < dataBuf.limit()-3; i++) {
+			if (dataBuf.get(i) == (byte) 0x0D && dataBuf.get(i + 1) == (byte) 0x0A
+					&& dataBuf.get(i + 2) == (byte) 0x0D
+					&& dataBuf.get(i + 3) == (byte) 0x0A) {
+				return i + 4;
+			}
+		}
+		return -1;
 	}
 
 
 	private boolean requestComplete(SelectionKey selectionKey,ByteBuffer dataBuf){
-		int last = dataBuf.remaining() - 1;
 		SelectionKeyAttachment attachment = (SelectionKeyAttachment) selectionKey.attachment();
 
-		if (dataBuf.remaining() < 4) {
+		if (dataBuf.position() < 4) {
 			return false;
 		}
 
+		int headerEnd = -1;
 		if (dataBuf.get(0) == (byte) 'G' && dataBuf.get(1) == (byte) 'E'
 				&& dataBuf.get(2) == (byte) 'T') {
 			// Http GET request therefore the last 4 bytes should be 0x0D 0x0A 0x0D 0x0A
-			attachment.setHttpMethod(HttpMethod.GET);
-			attachment.setRequestCompleted(true);
-
-			return dataBuf.get(last) == (byte) 0x0A
-					&& dataBuf.get(last - 1) == (byte) 0x0D
-					&& dataBuf.get(last - 2) == (byte) 0x0A && dataBuf.get(last - 3) == (byte) 0x0D;
+			
+			if ((headerEnd=findRequestHeaderEnd(dataBuf))>-1) {
+				attachment.setHttpMethod(HttpMethod.GET);
+				attachment.setHeaderEnd(headerEnd);
+				attachment.setRequestCompleted(true);
+				return true;
+			}
 		} else if (dataBuf.get(0) == (byte) 'P' && dataBuf.get(1) == (byte) 'O'
 				&& dataBuf.get(2) == (byte) 'S' && dataBuf.get(3) == (byte) 'T') {
 			// Http POST request
-			// first the position of the 0x0D 0x0A 0x0D 0x0A bytes
-			int postHeaderEnd = -1;
-			for (int i = 4; i < dataBuf.limit()-3; i++) {
-				if (dataBuf.get(i) == (byte) 0x0D && dataBuf.get(i + 1) == (byte) 0x0A
-						&& dataBuf.get(i + 2) == (byte) 0x0D
-						&& dataBuf.get(i + 3) == (byte) 0x0A) {
-					postHeaderEnd = i + 4;
-					break;
-				}
-			}
-			if(postHeaderEnd>3){
+			if ((headerEnd=findRequestHeaderEnd(dataBuf))>-1) {
 				attachment.setHttpMethod(HttpMethod.POST);
-				attachment.setPostHeaderEnd(postHeaderEnd);
+				attachment.setHeaderEnd(headerEnd);
 				attachment.setRequestCompleted(true);
 				return true;
 			}

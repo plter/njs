@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package com.plter.njs.core.tests;
+package com.plter.njs.socket.tests;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;

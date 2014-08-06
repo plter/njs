@@ -43,12 +43,12 @@ public class SelectionKeyAttachment {
 		this.httpMethod = httpMethod;
 	}
 
-	public int getPostHeaderEnd() {
-		return postHeaderEnd;
+	public int getHeaderEnd() {
+		return headerEnd;
 	}
 
-	public void setPostHeaderEnd(int postHeaderEnd) {
-		this.postHeaderEnd = postHeaderEnd;
+	void setHeaderEnd(int headerEnd) {
+		this.headerEnd = headerEnd;
 	}
 
 	public HttpRequest getHttpRequest() {
@@ -58,11 +58,25 @@ public class SelectionKeyAttachment {
 	void setHttpRequest(HttpRequest httpRequest) {
 		this.httpRequest = httpRequest;
 	}
+	
+	/**
+	 * If the space is enough to append new data,the method will append the new data,and then return true,or it will return false
+	 * @param data
+	 * @return
+	 */
+	boolean appendHttpRequestData(ByteBuffer data){
+		if (data.remaining()+httpRequestData.position()<httpRequestData.capacity()) {
+			httpRequestData.put(data);
+			return true;
+		}else{
+			return false;
+		}
+	}
 
 	private final ByteBuffer httpRequestData = ByteBuffer.allocateDirect(2048);
 	private boolean requestCompleted=false;
 	private String httpMethod = HttpMethod.GET;
-	private int postHeaderEnd=0;
+	private int headerEnd=0;
 	private HttpRequest httpRequest=null;
 	
 }

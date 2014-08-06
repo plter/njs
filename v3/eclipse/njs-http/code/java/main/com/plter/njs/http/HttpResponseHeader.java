@@ -81,6 +81,7 @@ public class HttpResponseHeader{
 			if (getContentLength()>0) {
 				headerBuf.put("Content-Length: ".getBytes(NJSHttpConfig.CHARSET));
 				headerBuf.put(String.valueOf(getContentLength()).getBytes(NJSHttpConfig.CHARSET));
+				headerBuf.put(CRLF);
 			}
 			headerBuf.put(CRLF);
 

@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 
+import com.plter.njs.http.HttpRequest;
 import com.plter.njs.http.HttpRequestDecoderFilter;
 import com.plter.njs.http.HttpResponseHeader;
 import com.plter.njs.socket.SocketAcceptor;
@@ -19,6 +20,7 @@ public class UsingHttp {
 			@Override
 			public void onMessageReceived(SelectionKey selectionKey,
 					Object message) {
+				System.out.println(((HttpRequest)message).getContext());
 				
 				try {
 					writeMessage(selectionKey, new HttpResponseHeader().getHeaderBuf());
