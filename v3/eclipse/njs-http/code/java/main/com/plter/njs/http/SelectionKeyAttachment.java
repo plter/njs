@@ -12,17 +12,20 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 
 package com.plter.njs.http;
 
 import java.nio.ByteBuffer;
+import java.util.logging.Logger;
+
+import com.plter.njs.log.LogFactory;
 
 public class SelectionKeyAttachment {
 
 	public SelectionKeyAttachment() {
 	}
-	
+
 	ByteBuffer getHttpRequestData() {
 		return httpRequestData;
 	}
@@ -58,7 +61,7 @@ public class SelectionKeyAttachment {
 	void setHttpRequest(HttpRequest httpRequest) {
 		this.httpRequest = httpRequest;
 	}
-	
+
 	/**
 	 * If the space is enough to append new data,the method will append the new data,and then return true,or it will return false
 	 * @param data
@@ -66,7 +69,12 @@ public class SelectionKeyAttachment {
 	 */
 	boolean appendHttpRequestData(ByteBuffer data){
 		if (data.remaining()+httpRequestData.position()<httpRequestData.capacity()) {
-			httpRequestData.put(data);
+			try{
+				httpRequestData.put(data);
+			}catch(Exception e){
+				log.severe(e.getLocalizedMessage());
+				return false;
+			}
 			return true;
 		}else{
 			return false;
@@ -78,5 +86,6 @@ public class SelectionKeyAttachment {
 	private String httpMethod = HttpMethod.GET;
 	private int headerEnd=0;
 	private HttpRequest httpRequest=null;
-	
+	private static final Logger log = LogFactory.getLogger();
+
 }
