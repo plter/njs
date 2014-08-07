@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="njs-socket" default="BuildAll">
+    
+	<property name="module_name" value="socket"/>
+	<property name="server_name" value="njs"/>
+	<property name="version" value="v3.0"/>
+	<property name="Project_njs_name" value="njs-${version}"/>
+
+    <target name="BuildAll">
+        <antcall target="Build_web_jar"></antcall>
+    </target>
+	
+	<target name="Build_web_jar">
+		<jar destfile="../${Project_njs_name}/plugins/${server_name}-${module_name}-${version}.jar">
+			<fileset dir="bin"/>
+		</jar>
+	</target>
+</project>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2013-02-17T13:06:44</date>
+  <millis>1361077604386</millis>
+  <sequence>0</sequence>
+  <logger>global</logger>
+  <level>INFO</level>
+  <class>com.plter.pws.conf.PWSConfig</class>
+  <method>loadConfig</method>
+  <thread>1</thread>
+  <message>Load PWS config file</message>
+</record>
+<record>
+  <date>2013-02-17T13:06:44</date>
+  <millis>1361077604480</millis>
+  <sequence>1</sequence>
+  <logger>global</logger>
+  <level>INFO</level>
+  <class>com.plter.pws.conf.PWSConfig</class>
+  <method>loadConfig</method>
+  <thread>1</thread>
+  <message>Tmp dir set to tmp</message>
+</record>
+<record>
+  <date>2013-02-17T13:06:44</date>
+  <millis>1361077604482</millis>
+  <sequence>2</sequence>
+  <logger>global</logger>
+  <level>INFO</level>
+  <class>com.plter.pws.conf.ContentTypeMap</class>
+  <method>loadContentTypesMap</method>
+  <thread>1</thread>
+  <message>Load content types map file</message>
+</record>
+<record>
+  <date>2013-02-17T13:06:44</date>
+  <millis>1361077604503</millis>
+  <sequence>3</sequence>
+  <logger>global</logger>
+  <level>INFO</level>
+  <class>com.plter.pws.core.SocketAcceptor</class>
+  <method>listen</method>
+  <thread>1</thread>
+  <message>Server started at port 8888</message>
+</record>

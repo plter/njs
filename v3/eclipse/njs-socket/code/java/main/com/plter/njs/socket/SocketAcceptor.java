@@ -23,7 +23,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.util.logging.Logger;
 
-import com.plter.njs.log.LogFactory;
+import com.plter.lib.java.utils.LogFactory;
 
 public class SocketAcceptor{
 

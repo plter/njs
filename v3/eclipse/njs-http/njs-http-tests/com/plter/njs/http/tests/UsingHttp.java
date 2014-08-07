@@ -1,14 +1,12 @@
 package com.plter.njs.http.tests;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 
 import com.plter.njs.http.HttpRequest;
 import com.plter.njs.http.HttpRequestDecoderFilter;
-import com.plter.njs.http.HttpResponseHeader;
-import com.plter.njs.socket.SocketAcceptor;
+import com.plter.njs.http.HttpResponse;
 import com.plter.njs.socket.BaseFilter;
+import com.plter.njs.socket.SocketAcceptor;
 
 public class UsingHttp {
 
@@ -20,15 +18,15 @@ public class UsingHttp {
 			@Override
 			public void onMessageReceived(SelectionKey selectionKey,
 					Object message) {
-				System.out.println(((HttpRequest)message).getContext());
 				
-				try {
-					writeMessage(selectionKey, new HttpResponseHeader().getHeaderBuf());
-					writeMessage(selectionKey, ByteBuffer.wrap("Hello Client".getBytes("utf-8")));
-					close(selectionKey);
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
+				HttpRequest request = (HttpRequest) message;
+				
+				new HttpResponse(){
+					public void doHandle() {
+						write("Hello Client");
+					};
+					
+				}.handle(selectionKey, request);
 				
 				super.onMessageReceived(selectionKey, message);
 			}

@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.plter.njs.log.LogFactory;
+import com.plter.lib.java.utils.LogFactory;
 import com.plter.njs.socket.BaseFilter;
 
 public final class HttpRequestDecoderFilter extends BaseFilter {
@@ -36,7 +36,7 @@ public final class HttpRequestDecoderFilter extends BaseFilter {
 
 	@Override
 	public void onSocketChannelOpen(SelectionKey selectionKey) {
-		selectionKey.attach(new SelectionKeyAttachment());
+		selectionKey.attach(new SelectionKeyAttachment(this));
 		super.onSocketChannelOpen(selectionKey);
 	}
 
@@ -154,11 +154,6 @@ public final class HttpRequestDecoderFilter extends BaseFilter {
 		}
 
 		return null;
-	}
-
-	@Override
-	public void close(SelectionKey selectionKey) {
-		super.close(selectionKey);
 	}
 
 

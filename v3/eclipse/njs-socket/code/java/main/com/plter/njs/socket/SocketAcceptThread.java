@@ -9,7 +9,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import com.plter.njs.log.LogFactory;
+import com.plter.lib.java.utils.LogFactory;
 
 public class SocketAcceptThread extends Thread {
 

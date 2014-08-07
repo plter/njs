@@ -19,11 +19,12 @@ package com.plter.njs.http;
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
-import com.plter.njs.log.LogFactory;
+import com.plter.lib.java.utils.LogFactory;
 
 public class SelectionKeyAttachment {
 
-	public SelectionKeyAttachment() {
+	public SelectionKeyAttachment(HttpRequestDecoderFilter filter) {
+		setHttpRequestDecoderFilter(filter);
 	}
 
 	ByteBuffer getHttpRequestData() {
@@ -80,6 +81,15 @@ public class SelectionKeyAttachment {
 			return false;
 		}
 	}
+	
+	void setHttpRequestDecoderFilter(
+			HttpRequestDecoderFilter httpRequestDecoderFilter) {
+		this.httpRequestDecoderFilter = httpRequestDecoderFilter;
+	}
+	
+	public HttpRequestDecoderFilter getHttpRequestDecoderFilter() {
+		return httpRequestDecoderFilter;
+	}
 
 	private final ByteBuffer httpRequestData = ByteBuffer.allocateDirect(2048);
 	private boolean requestCompleted=false;
@@ -87,5 +97,6 @@ public class SelectionKeyAttachment {
 	private int headerEnd=0;
 	private HttpRequest httpRequest=null;
 	private static final Logger log = LogFactory.getLogger();
+	private HttpRequestDecoderFilter httpRequestDecoderFilter=null;
 
 }
