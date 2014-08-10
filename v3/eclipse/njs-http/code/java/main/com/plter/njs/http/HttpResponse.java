@@ -37,20 +37,20 @@ public abstract class HttpResponse{
 	public static final int HTTP_STATUS_ACCESS_DENIED = 403;
 	public static final int HTTP_STATUS_NOT_FOUND = 404;
 	public static final int HTTP_STATUS_SERVER_ERROR = 500;
-	
-	
+
+
 	public HttpResponse() {
 		this(false,HTTP_STATUS_SUCCESS,"text/html");
 	}
-	
+
 	public HttpResponse(boolean keepAlive) {
 		this(keepAlive,HTTP_STATUS_SUCCESS,"text/html");
 	}
-	
-	
+
+
 	public HttpResponse(boolean keepAlive,int responseCode,String contentType){
 		initHeaders();
-		
+
 		setResponseCode(responseCode);
 		setContentType(contentType);
 		setKeepAlive(keepAlive);
@@ -110,25 +110,25 @@ public abstract class HttpResponse{
 	public void handle(SelectionKey selectionKey,HttpRequest request){
 		this.selectionKey = selectionKey;
 		httpRequest = request;
-		
+
 		sendHeader();
 		doHandle();
-		
+
 		if (!keepAlive) {
 			close();
 		}
 	}
-	
+
 	public SelectionKey getSelectionKey() {
 		return selectionKey;
 	}
-	
+
 	public HttpRequest getHttpRequest() {
 		return httpRequest;
 	}
-	
+
 	public abstract void doHandle();
-	
+
 	/**
 	 * Close the channel
 	 */
@@ -137,8 +137,8 @@ public abstract class HttpResponse{
 			((SelectionKeyAttachment)selectionKey.attachment()).getHttpRequestDecoderFilter().close(selectionKey);
 		}
 	}
-	
-	
+
+
 
 	public void setContentType(String contentType){
 		header("Content-Type", String.format("%s; charset=%s", contentType,NJSHttpConfig.CHARSET));
@@ -175,12 +175,12 @@ public abstract class HttpResponse{
 		makeHeaderBuf();
 		return headerBuf;
 	}
-	
+
 	void sendHeader(){
 		if (selectionKey==null) {
 			return;
 		}
-		
+
 		try {
 			((SocketChannel)selectionKey.channel()).write(getHeaderBuf());
 		} catch (IOException e) {
@@ -188,37 +188,45 @@ public abstract class HttpResponse{
 			close();
 		}
 	}
-	
-	public void write(String content){
+
+	public boolean write(String content){
 		try {
-			write(ByteBuffer.wrap(content.getBytes(NJSHttpConfig.CHARSET)));
+			return write(ByteBuffer.wrap(content.getBytes(NJSHttpConfig.CHARSET)));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
-	
-	public void write(byte[] bytes){
-		write(ByteBuffer.wrap(bytes));
+
+	public boolean write(byte[] bytes){
+		return write(ByteBuffer.wrap(bytes));
 	}
-	
-	public void write(ByteBuffer content){
+
+	public boolean write(ByteBuffer content){
 		if (selectionKey==null) {
-			return;
+			return false;
 		}
-		
+
 		try {
-			((SocketChannel)selectionKey.channel()).write(content);
+			while(content.hasRemaining()){
+				((SocketChannel)selectionKey.channel()).write(content);
+				Thread.sleep(5);
+			}
+			return true;
 		} catch (IOException e) {
-			log.warning("IO error accur when write http response content");
+//			log.warning("IO error accur when write http response content");
 			close();
+		} catch (InterruptedException e) {
+			log.warning("Can't sleep thread when write data");
 		}
+		return false;
 	}
-	
+
 	public HttpResponse setKeepAlive(boolean keepAlive) {
 		this.keepAlive = keepAlive;
 		return this;
 	}
-	
+
 	public boolean isKeepAlive() {
 		return keepAlive;
 	}
