@@ -52,6 +52,7 @@ public class FileResponse extends HttpResponse {
 
 	@Override
 	public void doHandle() {
+		
 		AIOFile.readFile(getFile(), (AIOFile target,ByteBuffer data,double percent)->{
 			if(!write(data)){
 				target.stopRead();
@@ -62,7 +63,7 @@ public class FileResponse extends HttpResponse {
 		}, (AIOFile target,int errorCode)->{
 			log.finer("Error ocur when read file data");
 			close();
-		},getFile().length()<1024*1024*2);
+		},true /*getFile().length()<1024*1024*2*/);
 	}
 
 	public File getFile() {

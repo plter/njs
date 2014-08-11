@@ -55,7 +55,7 @@ public class AIOFile {
 						readData();
 					}
 				};
-				timer.schedule(timerTask, 10, 1000);
+				timer.schedule(timerTask, 10, 20);
 			}
 		} catch (IOException e) {
 			if (this.errorListener!=null) {
